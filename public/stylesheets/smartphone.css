@@ -1,0 +1,42 @@
+#nav_header {
+	display: none;
+}
+
+/* CSS Navegacion Content*/
+#nav_content {
+	display:block;
+}
+#nav_content ul {
+	list-style-type: none;
+}
+#nav_content li a {
+	padding: 10px 10px;
+	display: block;
+	font-size: 15px;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+#nav_content a:hover{
+	background-color: #61ced9;
+}
+#nav_content li a .selected{
+	background-color: #61ced9;
+}
+/* CSS Article */
+
+article .article_left {
+	flex: 1 6 25%;
+	order: 1;
+	min-width: 100px;
+	background-color: #55BBCA;
+}
+article .article_right {
+	flex: 1 1 75%;
+	order: 2;
+}
+
+/* CSS General */
+input{
+	width:75%;
+}
+

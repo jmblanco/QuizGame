@@ -1,8 +1,152 @@
+*{ 
+	margin: 0; 
+	padding: 0;
+	font-family: 'Ubuntu', cursive;
+}
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	background: rgba(55, 55, 55, 0.1);
 }
 
-a {
-  color: #00B7FF;
+/* Main Boxes */
+.header_box {
+	background-color: #55BBCA;
+	position: relative;
 }
+.content_box {
+	background-color: #FFFFFF;
+}
+
+/* CSS Main*/
+#main {
+	display: -webkit-flex;
+	display:flex;
+	flex-flow: column;
+	height: 100%;
+	width: 100%;
+}
+#main .header_box {
+	flex: 1 6 10%;
+	order: 1;
+}
+#main .content_box {
+	flex: 1 1 90%;
+	order: 2;
+}
+
+/* CSS Navegacion Header*/
+#logo {
+	padding: 10px 30px 10px 30px;
+	float: left;
+}
+#logo img {
+	height:45px;
+	width:150px;
+}
+#nav_header {
+	padding: 10px 30px 10px 30px;
+	float: right;
+}
+#nav_header ul {
+	list-style-type: none;
+}
+#nav_header li {
+	display: inline;
+	float: left;
+}
+#nav_header li a {
+	padding: 10px 10px;
+	display: block;
+	font-size: 20px;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+#nav_header a:hover{
+	background-color: #61CED9;
+}
+#nav_header li a .selected{
+	background-color: #61CED9;
+}
+
+/* CSS Navegacion Content*/
+#nav_content {
+	display: none;
+}
+
+/* CSS Article */
+article {
+	display: -webkit-flex;
+	display:flex;
+	flex-flow: row;
+	height: 100%;
+	width: 100%;
+}
+article .article_left {
+	flex: 1 6 0%;
+	order: 1;
+}
+article .article_right {
+	flex: 1 1 100%;
+	order: 2;
+}
+
+article header {
+	background: rgba(190, 210, 220, 0.9);
+	font-size: 30px;
+	color: #FFFFFF;
+	padding: 5px;
+}
+article section {
+	padding: 10px;
+}
+
+/* CSS Footer */
+footer {
+	background: rgba(50, 50, 50, 0.5);
+	font-size: 15px;
+	color: #FFFFFF;
+	padding: 10px 30px 10px 30px;
+}
+footer p{
+	text-decoration: none;
+	color: #FFFFFF;
+	display: inline;
+}
+footer a{
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+/* CSS Article General */
+article p {
+	padding:10px;
+}
+
+/* CSS General */
+form {
+	padding: 5px 15px 5px 15px;
+}
+button {
+	border: solid 2px #BED2DC;
+	color: #FFFFFF;
+	font-size: 15px;
+	background: #61CED9;
+	padding: 5px 15px 5px 15px;
+}
+button:hover {
+	background: #55BBCA;
+	text-decoration: none;
+}
+
+input{
+	padding: 5px 15px 5px 15px;
+	width: 250px;
+	font-size: 15px;
+	border: solid 2px #BED2DC;
+	color: #000000;
+}
+input:focus {
+	outline: none !important;
+	border: solid 2px #55BBCA;
+	color: #000000;
+}
+

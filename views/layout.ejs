@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Quiz Web</title>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+		<link rel="stylesheet" media="only screen and (max-width: 455px)" href="/stylesheets/smartphone.css" />
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div id="main">
+			<div class="header_box">
+				<div id="logo">
+					<a href="/"><img src="/images/quiz-logo.png"></a>
+				</div>
+				<nav id="nav_header">
+					<ul>
+						<li><a href="/">Inicio</a></li>
+						<li><a href="/quizes/question">Preguntas</a></li>
+					</ul>
+				</nav>
+			</div>
+			<div class="content_box">
+				<article>
+					<div class="article_left">
+					<nav id="nav_content">
+						<ul>
+							<li><a href="/">Inicio</a></li>
+							<li><a href="/quizes/question">Preguntas</a></li>
+						</ul>
+					</nav>
+					</div>
+					<div class="article_right">
+						<%- body %>
+					</div>
+				</article>
+				<footer>
+					<p>
+						<a href="https://github.com/jmblanco/quizweb">JMBlanco Githup QuizWeb</a>
+					</p>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>
