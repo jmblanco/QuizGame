@@ -155,3 +155,22 @@ input:focus {
 	color: #000000;
 }
 
+video {
+	border: solid 1px #55BBCA;
+	box-shadow: 5px 5px 5px black;
+}
+/* CSS author */
+.author {
+	display: -webkit-flex;
+	display:flex;
+	flex-flow: row;
+}
+.author img {
+	border: solid 1px #55BBCA;
+	height: 100px;
+	width: 100px;
+	border-radius: 25px;
+}
+.author_desc {
+	padding: 10px;
+}
