@@ -116,6 +116,11 @@ footer a{
 	color: #FFFFFF;
 }
 
+footer a:hover{
+	text-decoration: none;
+	color: #55BBCA;
+}
+
 /* CSS Article General */
 article p {
 	padding:10px;

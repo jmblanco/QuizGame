@@ -3,9 +3,9 @@ exports.question = function(req, res){
 };
 
 exports.answer = function(req, res){
-	if (req.query.respuesta === 'Roma'){
-		res.render('quizes/answer', {respuesta: 'Correcto'});
+	if (req.query.respuesta.toLowerCase() === 'roma'){
+		res.render('quizes/answer', {respuesta: 'Correcta'});
 	}else{
-                res.render('quizes/answer', {respuesta: 'Incorrecto'});
+		res.render('quizes/answer', {respuesta: 'Incorrecta'});
 	}
 };
