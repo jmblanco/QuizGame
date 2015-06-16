@@ -9,6 +9,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Quiz' });
 });
 /* GET author page */
+router.get('/author', function(req, res, next) {
+  res.render('author', {});
+});
 
 /* GET quizes pages */
 router.get('/quizes/question', quizController.question);
