@@ -1,4 +1,7 @@
-var Utils = require("../../utils")
+'use strict';
+
+var Utils = require('../../utils')
+  , Promise = require('../../promise');
 
 /**
  Returns an object that treats SQLite's inabilities to do certain queries.
@@ -6,7 +9,7 @@ var Utils = require("../../utils")
  @class QueryInterface
  @static
  */
-var QueryInterface = module.exports = {
+module.exports = {
   /**
     A wrapper that fixes SQLite's inability to remove columns from existing tables.
     It will create a backup of the table, drop the table afterwards and create a
@@ -17,24 +20,27 @@ var QueryInterface = module.exports = {
 
     @param  {String} tableName     The name of the table.
     @param  {String} attributeName The name of the attribute that we want to remove.
+    @param  {Object} options
+    @param  {Boolean|Function} [options.logging] A function that logs the sql queries, or false for explicitly not logging these queries
     @param  {CustomEventEmitter} emitter       The EventEmitter from outside.
     @param  {Function} queryAndEmit  The function from outside that triggers some events to get triggered.
 
     @since 1.6.0
    */
-  removeColumn: function(tableName, attributeName, emitter, queryAndEmit) {
-    this.describeTable(tableName).complete(function(err, fields) {
-      if (err) {
-        emitter.emit('error', err)
-      } else {
-        delete fields[attributeName]
+  removeColumn: function(tableName, attributeName, options) {
+    var self = this;
+    options = options || {};
 
-        var sql        = this.QueryGenerator.removeColumnQuery(tableName, fields)
-          , subQueries = sql.split(';').filter(function(q) { return q !== '' })
+    return this.describeTable(tableName).then(function(fields) {
+      delete fields[attributeName];
 
-        QueryInterface.execMultiQuery.call(this, subQueries, 'removeColumn', emitter, queryAndEmit)
-      }
-    }.bind(this))
+      var sql = self.QueryGenerator.removeColumnQuery(tableName, fields)
+        , subQueries = sql.split(';').filter(function(q) { return q !== ''; });
+
+      return Promise.each(subQueries, function(subQuery) {
+        return self.sequelize.query(subQuery + ';', { raw: true, logging: options.logging });
+      });
+    });
   },
 
   /**
@@ -47,26 +53,28 @@ var QueryInterface = module.exports = {
 
     @param  {String} tableName The name of the table.
     @param  {Object} attributes An object with the attribute's name as key and it's options as value object.
+    @param  {Object} options
+    @param  {Boolean|Function} [options.logging] A function that logs the sql queries, or false for explicitly not logging these queries
     @param  {CustomEventEmitter} emitter The EventEmitter from outside.
     @param  {Function} queryAndEmit The function from outside that triggers some events to get triggered.
 
     @since 1.6.0
    */
-  changeColumn: function(tableName, attributes, emitter, queryAndEmit) {
+  changeColumn: function(tableName, attributes, options) {
     var attributeName = Utils._.keys(attributes)[0]
+      , self = this;
+    options = options || {};
 
-    this.describeTable(tableName).complete(function(err, fields) {
-      if (err) {
-        emitter.emit('error', err)
-      } else {
-        fields[attributeName] = attributes[attributeName]
+    return this.describeTable(tableName).then(function(fields) {
+      fields[attributeName] = attributes[attributeName];
 
-        var sql        = this.QueryGenerator.removeColumnQuery(tableName, fields)
-          , subQueries = sql.split(';').filter(function(q) { return q !== '' })
+      var sql = self.QueryGenerator.removeColumnQuery(tableName, fields)
+        , subQueries = sql.split(';').filter(function(q) { return q !== ''; });
 
-        QueryInterface.execMultiQuery.call(this, subQueries, 'changeColumn', emitter, queryAndEmit)
-      }
-    }.bind(this))
+      return Promise.each(subQueries, function(subQuery) {
+        return self.sequelize.query(subQuery + ';', { raw: true, logging: options.logging });
+      });
+    });
   },
 
   /**
@@ -80,107 +88,27 @@ var QueryInterface = module.exports = {
     @param  {String} tableName The name of the table.
     @param  {String} attrNameBefore The name of the attribute before it was renamed.
     @param  {String} attrNameAfter The name of the attribute after it was renamed.
+    @param  {Object} options
+    @param  {Boolean|Function} [options.logging] A function that logs the sql queries, or false for explicitly not logging these queries
     @param  {CustomEventEmitter} emitter The EventEmitter from outside.
     @param  {Function} queryAndEmit The function from outside that triggers some events to get triggered.
 
     @since 1.6.0
    */
-  renameColumn: function(tableName, attrNameBefore, attrNameAfter, emitter, queryAndEmit) {
-    this.describeTable(tableName).complete(function(err, fields) {
-      if (err) {
-        emitter.emit('error', err)
-      } else {
-        fields[attrNameAfter] = Utils._.clone(fields[attrNameBefore])
-        delete fields[attrNameBefore]
+  renameColumn: function(tableName, attrNameBefore, attrNameAfter, options) {
+    var self = this;
+    options = options || {};
 
-        var sql        = this.QueryGenerator.renameColumnQuery(tableName, attrNameBefore, attrNameAfter, fields)
-          , subQueries = sql.split(';').filter(function(q) { return q !== '' })
+    return this.describeTable(tableName).then(function(fields) {
+      fields[attrNameAfter] = Utils._.clone(fields[attrNameBefore]);
+      delete fields[attrNameBefore];
 
-        QueryInterface.execMultiQuery.call(this, subQueries, 'renameColumn', emitter, queryAndEmit)
-      }
-    }.bind(this))
-  },
+      var sql = self.QueryGenerator.renameColumnQuery(tableName, attrNameBefore, attrNameAfter, fields)
+        , subQueries = sql.split(';').filter(function(q) { return q !== ''; });
 
-  execMultiQuery: function(queries, methodName, emitter, queryAndEmit) {
-    var chainer = new Utils.QueryChainer()
-
-    queries.splice(0, queries.length - 1).forEach(function(query) {
-      chainer.add(this.sequelize, 'query', [query + ";", null, { raw: true }])
-    }.bind(this))
-
-    chainer
-      .runSerially()
-      .complete(function(err) {
-        if (err) {
-          emitter.emit(methodName, err)
-          emitter.emit('error', err)
-        } else {
-          queryAndEmit.call(this, queries.splice(queries.length - 1)[0], methodName, {}, emitter)
-        }
-      }.bind(this))
-  },
-
-  dropAllTables: function(options) {
-    var self = this
-
-    if (!options) {
-      options = {}
-    }
-
-    var skip = options.skip || [];
-
-   return new Utils.CustomEventEmitter(function(dropAllTablesEmitter) {
-      var events  = []
-        , chainer = new Utils.QueryChainer()
-        , onError = function(err) {
-            self.emit('dropAllTables', err)
-            dropAllTablesEmitter.emit('error', err)
-          }
-
-      self
-        .showAllTables()
-        .error(onError)
-        .success(function(tableNames) {
-          self
-            .sequelize
-            .query('PRAGMA foreign_keys;')
-            .proxy(dropAllTablesEmitter, { events: ['sql'] })
-            .error(onError)
-            .success(function(result) {
-              var foreignKeysAreEnabled = result.foreign_keys === 1
-
-              if (foreignKeysAreEnabled) {
-                var queries = []
-
-                queries.push('PRAGMA foreign_keys = OFF')
-
-                tableNames.forEach(function(tableName) {
-                  // if tableName is not in the Array of tables names then dont drop it
-                  if (skip.indexOf(tableName) === -1) {
-                    queries.push(self.QueryGenerator.dropTableQuery(tableName).replace(';', ''))
-                  }
-                })
-
-                queries.push('PRAGMA foreign_keys = ON')
-
-                QueryInterface.execMultiQuery.call(self, queries, 'dropAllTables', dropAllTablesEmitter, self.queryAndEmit)
-              } else {
-                // add the table removal query to the chainer
-                tableNames.forEach(function(tableName) {
-                  chainer.add(self, 'dropTable', [ tableName, { cascade: true } ])
-                })
-
-                chainer
-                  .runSerially()
-                  .proxy(dropAllTablesEmitter, { events: ['sql'] })
-                  .error(onError)
-                  .success(function() {
-                    self.emit('dropAllTables', null)
-                    dropAllTablesEmitter.emit('success', null)
-                  })
-              }
-            })
-        })
-    }).run()
+      return Promise.each(subQueries, function(subQuery) {
+        return self.sequelize.query(subQuery + ';', { raw: true, logging: options.logging });
+      });
+    });
   }
-}
+};

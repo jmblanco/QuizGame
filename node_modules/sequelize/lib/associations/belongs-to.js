@@ -1,135 +1,181 @@
-var Utils       = require("./../utils")
-  , DataTypes   = require('./../data-types')
-  , Helpers     = require('./helpers')
+'use strict';
+
+var Utils = require('./../utils')
+  , Helpers = require('./helpers')
   , Transaction = require('../transaction')
+  , Association = require('./base')
+  , util = require('util');
 
 module.exports = (function() {
   var BelongsTo = function(source, target, options) {
-    this.associationType      = 'BelongsTo'
-    this.source               = source
-    this.target               = target
-    this.options              = options
-    this.isSingleAssociation  = true
-    this.isSelfAssociation    = (this.source.tableName == this.target.tableName)
-    this.as                   = this.options.as
+    Association.call(this);
 
-    if (this.isSelfAssociation && !this.options.foreignKey && !!this.as) {
-      this.options.foreignKey = Utils._.underscoredIf(Utils.singularize(this.source.tableName, this.source.options.language) + "Id", this.source.options.underscored)
+    this.associationType = 'BelongsTo';
+    this.source = source;
+    this.target = target;
+    this.options = options;
+    this.scope = options.scope;
+    this.isSingleAssociation = true;
+    this.isSelfAssociation = (this.source === this.target);
+    this.as = this.options.as;
+
+    if (Utils._.isObject(this.options.foreignKey)) {
+      this.foreignKeyAttribute = this.options.foreignKey;
+      this.foreignKey = this.foreignKeyAttribute.name || this.foreignKeyAttribute.fieldName;
+    } else {
+      this.foreignKeyAttribute = {};
+      this.foreignKey = this.options.foreignKey;
     }
 
     if (this.as) {
-      this.isAliased = true
+      this.isAliased = true;
+      this.options.name = {
+        singular: this.as
+      };
     } else {
-      this.as = Utils.singularize(this.target.tableName, this.target.options.language)
-      // Hotfix
-      if (this.as === this.target.tableName) {
-        this.as = Utils.singularize(this.target.name, this.target.options.language)
-      }
+      this.as = this.target.options.name.singular;
+      this.options.name = this.target.options.name;
     }
 
-    this.associationAccessor = this.isSelfAssociation
-      ? Utils.combineTableNames(this.target.tableName, this.as)
-      : this.as
+    if (!this.options.foreignKey) {
+      this.options.foreignKey = Utils._.camelizeIf(
+        [
+          Utils._.underscoredIf(this.as, this.source.options.underscored),
+          this.target.primaryKeyAttribute
+        ].join('_'),
+        !this.source.options.underscored
+      );
+    }
 
-    this.options.useHooks = options.useHooks
+    this.identifier = this.foreignKey || Utils._.camelizeIf(
+      [
+        Utils._.underscoredIf(this.options.name.singular, this.target.options.underscored),
+        this.target.primaryKeyAttribute
+      ].join('_'),
+      !this.target.options.underscored
+    );
+
+    this.targetIdentifier = this.target.primaryKeyAttribute;
+    this.associationAccessor = this.as;
+    this.options.useHooks = options.useHooks;
+
+    // Get singular name, trying to uppercase the first letter, unless the model forbids it
+    var singular = Utils.uppercaseFirst(this.options.name.singular);
 
     this.accessors = {
-      get: Utils._.camelize('get_' + this.as),
-      set: Utils._.camelize('set_' + this.as),
-      create: Utils._.camelize('create_' + this.as)
-    }
-  }
+      get: 'get' + singular,
+      set: 'set' + singular,
+      create: 'create' + singular
+    };
+  };
+
+  util.inherits(BelongsTo, Association);
 
   // the id is in the source table
   BelongsTo.prototype.injectAttributes = function() {
-    var newAttributes  = {}
-      , targetKeys     = Object.keys(this.target.primaryKeys)
-      , keyType        = ((this.target.hasPrimaryKeys && targetKeys.length === 1) ? this.target.rawAttributes[targetKeys[0]].type : DataTypes.INTEGER)
+    var newAttributes = {};
 
-    this.identifier = this.options.foreignKey || Utils._.underscoredIf(Utils.singularize(this.target.tableName, this.target.options.language) + "Id", this.source.options.underscored)
+    newAttributes[this.identifier] = Utils._.defaults(this.foreignKeyAttribute, { type: this.options.keyType || this.target.rawAttributes[this.targetIdentifier].type });
+    if (this.options.constraints !== false) {
+      this.options.onDelete = this.options.onDelete || 'SET NULL';
+      this.options.onUpdate = this.options.onUpdate || 'CASCADE';
+    }
+    Helpers.addForeignKeyConstraints(newAttributes[this.identifier], this.target, this.source, this.options);
+    Utils.mergeDefaults(this.source.rawAttributes, newAttributes);
 
-    newAttributes[this.identifier] = { type: this.options.keyType || keyType }
-    Helpers.addForeignKeyConstraints(newAttributes[this.identifier], this.target, this.source, this.options)
-    Utils._.defaults(this.source.rawAttributes, newAttributes)
+    this.identifierField = this.source.rawAttributes[this.identifier].field || this.identifier;
 
     // Sync attributes and setters/getters to DAO prototype
-    this.source.refreshAttributes()
+    this.source.refreshAttributes();
 
-    return this
-  }
+    Helpers.checkNamingCollision(this);
 
-  BelongsTo.prototype.injectGetter = function(obj) {
-    var self     = this
-      , primaryKeys = Object.keys(self.target.primaryKeys)
-      , primaryKey = primaryKeys.length === 1 ? primaryKeys[0] : 'id'
+    return this;
+  };
 
-    obj[this.accessors.get] = function(params) {
-      var id      = this[self.identifier]
-        , where   = {}
+  // Add getAssociation method to the prototype of the model instance
+  BelongsTo.prototype.injectGetter = function(instancePrototype) {
+    var association = this;
 
-      where[primaryKey] = id
+    instancePrototype[this.accessors.get] = function(options) {
+      var where = {};
+      where[association.targetIdentifier] = this.get(association.identifier);
 
-      if (!Utils._.isUndefined(params)) {
-        if (!Utils._.isUndefined(params.where)) {
-          params.where = Utils._.extend(where, params.where)
+      options = association.target.__optClone(options) || {};
+
+      options.where = {
+        $and: [
+          options.where,
+          where
+        ]
+      };
+
+      if (options.limit === undefined) options.limit = null;
+
+      var model = association.target;
+      if (options.hasOwnProperty('scope')) {
+        if (!options.scope) {
+          model = model.unscoped();
         } else {
-          params.where = where
+          model = model.scope(options.scope);
         }
-      } else {
-        params = id
       }
 
-      return self.target.find(params)
-    }
+      return model.find(options);
+    };
 
-    return this
-  }
+    return this;
+  };
 
-  BelongsTo.prototype.injectSetter = function(obj) {
-    var self     = this
+  // Add setAssociaton method to the prototype of the model instance
+  BelongsTo.prototype.injectSetter = function(instancePrototype) {
+    var association = this;
 
-    obj[this.accessors.set] = function(associatedObject, options) {
-      var primaryKeys = !!associatedObject && !!associatedObject.daoFactory ? Object.keys(associatedObject.daoFactory.primaryKeys) : []
-        , primaryKey = primaryKeys.length === 1 ? primaryKeys[0] : 'id'
+    instancePrototype[this.accessors.set] = function(associatedInstance, options) {
+      options = options || {};
 
-      this[self.identifier] = associatedObject ? associatedObject[primaryKey] : null
+      var value = associatedInstance;
+      if (associatedInstance instanceof association.target.Instance) {
+        value = associatedInstance[association.targetIdentifier];
+      }
+
+      this.set(association.identifier, value);
+
+      if (options.save === false) return;
+
       options = Utils._.extend({
-        fields: [ self.identifier ],
-        allowNull: [self.identifier],
+        fields: [association.identifier],
+        allowNull: [association.identifier],
         association: true
-      }, options)
+      }, options);
+
 
       // passes the changed field to save, so only that field get updated.
-      return this.save(options)
-    }
+      return this.save(options);
+    };
 
-    return this
-  }
+    return this;
+  };
 
-  BelongsTo.prototype.injectCreator = function(obj) {
-    var self = this
+  // Add createAssociation method to the prototype of the model instance
+  BelongsTo.prototype.injectCreator = function(instancePrototype) {
+    var association = this;
 
-    obj[this.accessors.create] = function(values, fieldsOrOptions) {
+    instancePrototype[this.accessors.create] = function(values, fieldsOrOptions) {
       var instance = this
-        , options = {}
+        , options = {};
 
       if ((fieldsOrOptions || {}).transaction instanceof Transaction) {
-        options.transaction = fieldsOrOptions.transaction
+        options.transaction = fieldsOrOptions.transaction;
       }
 
-      return new Utils.CustomEventEmitter(function(emitter) {
-        self.target
-          .create(values, fieldsOrOptions)
-          .proxy(emitter, { events: ['error', 'sql'] })
-          .success(function(newAssociatedObject) {
-            instance[self.accessors.set](newAssociatedObject, options)
-              .proxy(emitter)
-          })
-      }).run()
-    }
+      return association.target.create(values, fieldsOrOptions).then(function(newAssociatedObject) {
+        return instance[association.accessors.set](newAssociatedObject, options);
+      });
+    };
 
-    return this
-  }
+    return this;
+  };
 
-  return BelongsTo
-})()
+  return BelongsTo;
+})();

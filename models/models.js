@@ -24,8 +24,8 @@ var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
 exports.Quiz = Quiz; //exportar la definicion de la tabla Quiz
 
 
-sequelize.sync().success(function() {
-	Quiz.count().success(function (count) {
+sequelize.sync().then(function() {
+	Quiz.count().then(function (count) {
 		if (count === 0){
 			Quiz.create({pregunta: 'Capital de Italia', respuesta: 'roma'});
 			Quiz.create({pregunta: 'Capital de Portugal', respuesta: 'lisboa'}).then(function(){

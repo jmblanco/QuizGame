@@ -31,16 +31,22 @@ exports.search = function(req, res){
 //GET /quizes/new
 exports.new = function(req, res){
 	var quiz = models.Quiz.build({pregunta: "", respuesta: ""});
-	res.render('quizes/new', {quiz: quiz});
+	res.render('quizes/new', {quiz: quiz, errors:[]});
 }
 
 //POST /quizes/create
 exports.create = function(req, res){
 	var quiz =  models.Quiz.build( req.body.quiz );
-	console.log("Req body Quiz: "+ req.body.quiz );
-	quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
-		res.redirect('/quizes');
-	});
+	console.log("Validar quiz: "+ quiz.validate());
+	quiz.validate().then(function(err){
+		if (err) {
+			res.render('quizes/new', {quiz: quiz, errors: err.errors});
+		} else {
+			quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){ 
+				res.redirect('/quizes')
+			}); 
+		}	  
+	}).catch(function(error){next(error)});
 }
 
 // GET /quizes/:id

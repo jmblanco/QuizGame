@@ -273,3 +273,16 @@ video {
 .author_desc {
 	padding: 10px;
 }
+
+/* Div Errores */
+#ErrorMsgs {
+	border: 1px solid;
+	margin: 10px 25px;
+	padding: 10px 15px 10px 70px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+	color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url(../images/error.png);
+	display: inline-block;
+}
