@@ -22,11 +22,26 @@ exports.index = function(req, res) {
 // GET /quizes/search
 exports.search = function(req, res){
 	var search = "%"+req.query.search.toLowerCase().replace(' ','%')+"%";
-	console.log("Searching for term ["+search+"]")
-		models.Quiz.findAll({where:["LOWER(pregunta) like ?", search],order: "pregunta ASC"}).then(function (quizes){
-			res.render('quizes/search', {quizes: quizes});	
+	console.log("Searching for term ["+search+"]");
+	models.Quiz.findAll({where:["LOWER(pregunta) like ?", search],order: "pregunta ASC"}).then(function (quizes){
+		res.render('quizes/search', {quizes: quizes});	
 	}).catch(function(error) { next(error);});
 };
+
+//GET /quizes/new
+exports.new = function(req, res){
+	var quiz = models.Quiz.build({pregunta: "", respuesta: ""});
+	res.render('quizes/new', {quiz: quiz});
+}
+
+//POST /quizes/create
+exports.create = function(req, res){
+	var quiz =  models.Quiz.build( req.body.quiz );
+	console.log("Req body Quiz: "+ req.body.quiz );
+	quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
+		res.redirect('/quizes');
+	});
+}
 
 // GET /quizes/:id
 exports.show = function(req, res){

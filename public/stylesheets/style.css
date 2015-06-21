@@ -88,7 +88,6 @@ article .article_right {
 	flex: 1 1 100%;
 	order: 2;
 }
-
 article header {
 	background: rgba(190, 210, 220, 0.9);
 	font-size: 30px;
@@ -96,11 +95,19 @@ article header {
 	padding: 5px;
 }
 
+/* Form Quiz Search */
 .form_quiz_search {
 	text-align: right;
 }
-
-.form_quiz_search button {
+.form_quiz_search input{
+	padding: 0px 5px 0px 5px;
+	width: 100px;
+	height: 26px;
+	font-size: 15px;
+	border: solid 2px #BED2DC;
+	color: #000000;
+}
+.search {
 	border: solid 2px #BED2DC;
 	color: #FFFFFF;
 	background: url(../images/search.png) no-repeat #61CED9;
@@ -110,25 +117,28 @@ article header {
 	margin-left:1px;
 	float:right;
 }
-.form_quiz_search button:hover {
+.search:hover {
 	background: url(../images/search.png) no-repeat #55BBCA;
 	background-size: 100% 100%;
 }
 
-.form_quiz_search input{
-	padding: 0px 5px 0px 5px;
-	width: 100px;
-	height: 26px;
-	font-size: 15px;
-	border: solid 2px #BED2DC;
-	color: #000000;
+/* Form Quiz cmd */
+.form_quiz_cmd {
+	width: 50%;
 }
-
-article section {
-	padding: 10px 10px 5px 20px;
+.form_quiz_cmd input{
+	width: 100%;
+	margin: 10px 0px 0px 10px;
+}
+.form_quiz_cmd button{
+	width: 80px;
+	margin: 10px 0px 0px 10px;
 }
 
 /* CSS Section */
+article section {
+	padding: 10px 10px 5px 20px;
+}
 section .link_question {
     counter-reset: li; /* Initiate a counter */
     list-style: none; /* Remove default numbering */
@@ -136,7 +146,6 @@ section .link_question {
     padding: 0;
     text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
-
 section .link_question a{
     position: relative;
     display: block;
@@ -149,15 +158,12 @@ section .link_question a{
     border-radius: .3em;
     transition: all .3s ease-out;   
 }
-
 section.link_question a:hover{
     background: #eee;
 }
-
 section .link_question a:hover:before{
     transform: rotate(360deg);  
 }
-
 section .link_question a:before{
     content: counter(li);
     counter-increment: li;

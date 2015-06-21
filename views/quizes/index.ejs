@@ -1,7 +1,7 @@
 <header>Preguntas</header>
 <form class="form_quiz_search" method="get" action="/quizes/search">
 	<input type="text" name="search" placeholder="Buscar..."/>
-	<button type="submit"/></button>
+	<button class="search" type="submit"/></button>
 </form>
 <section>
 	<ol class="link_question">
@@ -9,4 +9,6 @@
 			<li><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></li>
 		<% } %>
 	</ol>
+	<p></p>
+	<a href="quizes/new"><button type="button">Crear Pregunta</button></a>
 </section>
