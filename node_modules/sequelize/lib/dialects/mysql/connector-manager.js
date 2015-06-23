@@ -68,6 +68,13 @@ module.exports = (function() {
             return this.write.release(client);
           }
         },
+        destroy: function (client) {
+          if (client.queryType == 'read') {
+            return this.read.destroy(client);
+          } else {
+            return this.write.destroy(client);
+          }
+        },
         acquire: function (callback, priority, queryType) {
           if (queryType == 'SELECT') {
             this.read.acquire(callback, priority);
@@ -108,7 +115,7 @@ module.exports = (function() {
           create: function (done) {
             connect.call(self, function (err, connection) {
               if (connection) {
-                connection.queryType = 'read'
+                connection.queryType = 'write'
               }
 
               done(err, connection)
@@ -153,7 +160,7 @@ module.exports = (function() {
 
       return
     }.bind(this);
-    
+
     process.on('exit', this.onProcessExit)
   }
 
@@ -185,7 +192,7 @@ module.exports = (function() {
           setTimeout(function() {
             if (self.pendingQueries === 0){
               self.disconnect.call(self);
-            } 
+            }
           }, 100);
         }
       }
@@ -367,7 +374,7 @@ module.exports = (function() {
 
   var dequeue = function(queueItem) {
     //return the item's connection to the pool
-    if (this.pool) {
+    if (this.pool && queueItem.client) {
       this.pool.release(queueItem.client)
     }
     this.activeQueue = without(this.activeQueue, queueItem)
@@ -397,6 +404,7 @@ module.exports = (function() {
       type: queueItem.query.options.type
     }, function (err, connection) {
       if (err) {
+        afterQuery.call(self, queueItem)
         queueItem.query.emit('error', err)
         return
       }
