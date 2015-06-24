@@ -18,6 +18,7 @@ router.param('quizId', quizController.load);
 
 // GET quizes pages
 router.get('/quizes', quizController.index);
+router.get('/quizes/search', quizController.search);
 router.get('/quizes/:quizId(\\d+)', quizController.show);
 router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
 

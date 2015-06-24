@@ -1,8 +1,12 @@
 <header>Preguntas</header>
+<form class="form_quiz_search" method="get" action="/quizes/search">
+	<input type="text" name="search" placeholder="Buscar..."/>
+	<button type="submit"/></button>
+</form>
 <section>
-	<table>
+	<ol class="link_question">
 		<% var i; for(i=0; i < quizes.length; i++) { %>
-			<tr><td><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></td></tr>
+			<li><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></li>
 		<% } %>
-	</table>
+	</ol>
 </section>

@@ -19,6 +19,15 @@ exports.index = function(req, res) {
 	}).catch(function(error) { next(error);});
 };
 
+// GET /quizes/search
+exports.search = function(req, res){
+	var search = "%"+req.query.search.toLowerCase().replace(' ','%')+"%";
+	console.log("Searching for term ["+search+"]")
+	models.Quiz.findAll({where:["LOWER(pregunta) like ?", search], order: '`pregunta` ASC'}).then(function (quizes) {
+		res.render('quizes/search', {quizes: quizes});	
+	}).catch(function(error) { next(error);});
+};
+
 // GET /quizes/:id
 exports.show = function(req, res){
 	res.render('quizes/show', {quiz: req.quiz});	
@@ -27,7 +36,7 @@ exports.show = function(req, res){
 // GET /quizes/:id/answer
 exports.answer = function(req, res){
 	var resultado;
-	if (req.query.respuesta.toLowerCase() === req.quiz.respuesta){
+	if (req.query.respuesta.toLowerCase() === req.quiz.respuesta.toLowerCase()){
 		resultado = 'Correcta';
 	}else{
 		resultado = 'Incorrecta';

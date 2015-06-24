@@ -1,0 +1,9 @@
+<header>Busqueda de Preguntas</header>
+<section>
+	<ol class="link_question">
+		<% var i; for(i=0; i < quizes.length; i++) { %>
+			<li><a href="../quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></li>
+		<% } %>
+	</ol>
+	<a class="link_back" href="/quizes">Atras</a>
+</section>

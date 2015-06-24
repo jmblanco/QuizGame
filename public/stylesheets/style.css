@@ -95,8 +95,85 @@ article header {
 	color: #FFFFFF;
 	padding: 5px;
 }
+
+.form_quiz_search {
+	text-align: right;
+}
+
+.form_quiz_search button {
+	border: solid 2px #BED2DC;
+	color: #FFFFFF;
+	background: url(../images/search.png) no-repeat #61CED9;
+	background-size: 100% 100%;
+	height: 30px;
+	width: 30px;
+	margin-left:1px;
+	float:right;
+}
+.form_quiz_search button:hover {
+	background: url(../images/search.png) no-repeat #55BBCA;
+	background-size: 100% 100%;
+}
+
+.form_quiz_search input{
+	padding: 0px 5px 0px 5px;
+	width: 100px;
+	height: 26px;
+	font-size: 15px;
+	border: solid 2px #BED2DC;
+	color: #000000;
+}
+
 article section {
-	padding: 10px;
+	padding: 10px 10px 5px 20px;
+}
+
+/* CSS Section */
+section .link_question {
+    counter-reset: li; /* Initiate a counter */
+    list-style: none; /* Remove default numbering */
+    *list-style: decimal; /* Keep using default numbering for IE6/7 */
+    padding: 0;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+
+section .link_question a{
+    position: relative;
+    display: block;
+    padding: .4em .4em .4em 4em;
+    *padding: .4em;
+    margin: .5em 0;
+    background: #ddd;
+    color: #444;
+    text-decoration: none;
+    border-radius: .3em;
+    transition: all .3s ease-out;   
+}
+
+section.link_question a:hover{
+    background: #eee;
+}
+
+section .link_question a:hover:before{
+    transform: rotate(360deg);  
+}
+
+section .link_question a:before{
+    content: counter(li);
+    counter-increment: li;
+    position: absolute; 
+    left: -0.3em;
+    top: 50%;
+    margin-top: -1.3em;
+    background: #87ceeb;
+    height: 2em;
+    width: 2em;
+    line-height: 2em;
+    border: .3em solid #fff;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 2em;
+    transition: all .3s ease-out;
 }
 
 /* CSS Footer */
@@ -127,6 +204,21 @@ article p {
 }
 
 /* CSS General */
+.link_back {
+	position: relative;
+    display: block;
+    padding: 10px;
+    margin: 5px 0px;
+    background: #DDDDDD;
+    color: #444444;
+    text-decoration: none;
+    border-radius: .3em;
+    transition: all .3s ease-out;  
+}
+.link_back:hover {
+	color: #87ceeb;
+}
+
 form {
 	padding: 5px 15px 5px 15px;
 }
@@ -159,6 +251,7 @@ video {
 	border: solid 1px #55BBCA;
 	box-shadow: 5px 5px 5px black;
 }
+
 /* CSS author */
 .author {
 	display: -webkit-flex;
