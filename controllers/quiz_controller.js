@@ -23,7 +23,8 @@ exports.index = function(req, res) {
 exports.search = function(req, res){
 	var search = "%"+req.query.search.toLowerCase().replace(' ','%')+"%";
 	console.log("Searching for term ["+search+"]")
-	models.Quiz.findAll({where:["LOWER(pregunta) like ?", search], order: '`pregunta` ASC'}).then(function (quizes) {
+	//models.Quiz.findAll({where:["LOWER(pregunta) like ?", search], order: '`pregunta` ASC'}).then(function (quizes) {
+		models.Quiz.findAll({where:["pregunta like ?", search]}).then(function (quizes) {
 		res.render('quizes/search', {quizes: quizes});	
 	}).catch(function(error) { next(error);});
 };
