@@ -2,7 +2,7 @@
 <section>
 	<h1><%= quiz.pregunta %></h1>
 	<form method="get" action="/quizes/<%= quiz.id %>/answer">
-		<input type="text" name="respuesta" hint="Responda aquí"/>
+		<input type="text" name="respuesta" placeholder="Responda aquí"/>
 		<button type="submit"/>Enviar</button>
 	</form>
 </section>
