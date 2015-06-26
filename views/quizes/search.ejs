@@ -1,9 +1,15 @@
 <header>Busqueda de Preguntas</header>
 <section>
-	<ol class="link_question">
+	<ul class="link_question">
 		<% var i; for(i=0; i < quizes.length; i++) { %>
-			<li><a href="../quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></li>
+			<li>
+				<a class="question" href="../quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a>
+				<div class="question_actions">
+					<a href="../quizes/<%= quizes[i].id %>/edit"><button>Editar</button></a>
+				</div>
+			</li>
 		<% } %>
-	</ol>
+	</ul>
+	<p></p>
 	<a class="link_back" href="/quizes">Atras</a>
 </section>

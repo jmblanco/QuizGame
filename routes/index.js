@@ -18,10 +18,14 @@ router.param('quizId', quizController.load);
 
 // GET quizes pages
 router.get('/quizes', quizController.index);
-router.get('/quizes/search', quizController.search);
 router.get('/quizes/new', quizController.new);
+router.get('/quizes/search', quizController.search);
 router.get('/quizes/:quizId(\\d+)', quizController.show);
 router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
+router.get('/quizes/:quizId(\\d+)/edit', quizController.edit);
+
+// PUT quizes pages
+router.put('/quizes/:quizId(\\d+)', quizController.update);
 
 // POST quizes pages
 router.post('/quizes/create', quizController.create);

@@ -4,11 +4,16 @@
 	<button class="search" type="submit"/></button>
 </form>
 <section>
-	<ol class="link_question">
-		<% var i; for(i=0; i < quizes.length; i++) { %>
-			<li><a href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></li>
-		<% } %>
-	</ol>
-	<p></p>
 	<a href="quizes/new"><button type="button">Crear Pregunta</button></a>
+	<p></p>
+	<ul class="link_question">
+		<% var i; for(i=0; i < quizes.length; i++) { %>
+			<li>
+				<a class="question" href="quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a>
+				<div class="question_actions">
+					<a href="quizes/<%= quizes[i].id %>/edit"><button>Editar</button></a>
+				</div>
+			</li>
+		<% } %>
+	</ul>
 </section>

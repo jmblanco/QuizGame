@@ -1,0 +1,17 @@
+<header>Preguntas</header>
+<section>
+	<h1>Editar la pregunta de Quiz <span style="color:red">[<%= quiz.pregunta %>]</span></h1>
+
+	<% if (errors.length) { %>
+		<div id="ErrorMsgs">
+			<ul>
+			<% for (var i in errors) {%>
+				<li> <%= errors[i].message %> </li>
+			<% } %>
+			</ul>
+		</div>
+	<% } %>
+	<form class="form_quiz_cmd" method="post" action="/quizes/<%= quiz.id %>?_method=put">
+		<% include _form_quiz.ejs %>
+	</form>
+</section>
