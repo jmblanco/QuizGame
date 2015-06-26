@@ -6,6 +6,7 @@
 				<a class="question" href="../quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a>
 				<div class="question_actions">
 					<a href="../quizes/<%= quizes[i].id %>/edit"><button>Editar</button></a>
+					<form method="post" action="../quizes/<%= quizes[i].id %>?_method=delete"><button type="submit" onClick="return confirm('Borrar: <%= quizes[i].pregunta %>');">Borrar</button></form>
 				</div>
 			</li>
 		<% } %>

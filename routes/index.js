@@ -27,6 +27,9 @@ router.get('/quizes/:quizId(\\d+)/edit', quizController.edit);
 // PUT quizes pages
 router.put('/quizes/:quizId(\\d+)', quizController.update);
 
+// DELETE quizes pages
+router.delete('/quizes/:quizId(\\d+)', quizController.destroy);
+
 // POST quizes pages
 router.post('/quizes/create', quizController.create);
 

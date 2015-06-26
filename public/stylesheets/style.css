@@ -152,7 +152,19 @@ section .link_question li {
 	width: 100%;
 }
 section .link_question .question_actions {
+	margin: -8px 8px;
 	text-align: right;
+}
+section .link_question .question_actions form{
+	display: inline-block;
+	padding: 0px;
+}
+section .link_question .question_actions button{
+	border: solid 2px #BED2DC;
+	color: #FFFFFF;
+	font-size: 12px;
+	background: #61CED9;
+	padding: 3px 10px 3px 10px;
 }
 section .link_question .question{
     position: relative;
