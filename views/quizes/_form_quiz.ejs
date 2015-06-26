@@ -1,5 +1,17 @@
 <input type="text" id="preg" name="quiz[pregunta]" placeholder="Escriba la pregunta" value="<%= quiz.pregunta %>"/>
 <input type="text" id="resp" name="quiz[respuesta]" placeholder="Escriba la respuesta" value="<%= quiz.respuesta %>"/>
+<div class="select_style">
+	<select name="quiz[categoria]">
+		<% var i; for(i=0; i < quizCategories.length; i++) { %>
+			<% if (quiz.categoria == quizCategories[i].codigo) { %>
+				<option value="<%= quizCategories[i].codigo %>" selected><%= quizCategories[i].nombre %></option>
+			<% } else { %>
+				<option value="<%= quizCategories[i].codigo %>"><%= quizCategories[i].nombre %></option>
+			<% } %>
+		
+		<% } %>	
+	</select>
+</div>
 <button type="submit"/>Enviar</button>
 <a href="/quizes"><button type="submit"/>Cancelar</button></a>
 

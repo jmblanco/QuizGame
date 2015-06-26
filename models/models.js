@@ -20,17 +20,33 @@ var sequelize = new Sequelize(DB_name, user, pwd, {dialect: protocol, protocol: 
 
 //Importar la definicion de la tabla Quiz en quiz.js
 var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
+var QuizCategory = sequelize.import(path.join(__dirname, 'quiz_category'));
 
 exports.Quiz = Quiz; //exportar la definicion de la tabla Quiz
-
+exports.QuizCategory = QuizCategory;
 
 sequelize.sync().then(function() {
 	Quiz.count().then(function (count) {
 		if (count === 0){
-			Quiz.create({pregunta: 'Capital de Italia', respuesta: 'roma'});
-			Quiz.create({pregunta: 'Capital de Portugal', respuesta: 'lisboa'}).then(function(){
-				console.log('Base de datos inicializada');
+			Quiz.create({pregunta: 'Capital de Italia', respuesta: 'roma', categoria: 'GEO'});
+			Quiz.create({pregunta: 'Capital de Portugal', respuesta: 'lisboa', categoria: 'GEO'}).then(function(){
+				console.log('Preguntas base inicializadas');
+			});
+		}
+	});
+
+	QuizCategory.count().then(function (count) {
+		if (count === 0){
+			QuizCategory.create({codigo: 'OTR', nombre: 'Otro'});
+			QuizCategory.create({codigo: 'HUM', nombre: 'Humanidades'});
+			QuizCategory.create({codigo: 'OCI', nombre: 'Ocio'});
+			QuizCategory.create({codigo: 'CIE', nombre: 'Ciencia'});
+			QuizCategory.create({codigo: 'TEC', nombre: 'Tecnología'});
+			QuizCategory.create({codigo: 'GEO', nombre: 'Geografia'});
+			QuizCategory.create({codigo: 'DEP', nombre: 'Deportes'}).then(function(){
+				console.log('Categorias base inicializadas');
 			});
 		}
 	});
 });
+

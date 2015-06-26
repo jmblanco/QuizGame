@@ -130,6 +130,9 @@ article header {
 	width: 100%;
 	margin: 10px 0px 0px 10px;
 }
+.form_quiz_cmd select{
+	margin: 10px 0px 0px 10px;
+}
 .form_quiz_cmd button{
 	width: 80px;
 	margin: 10px 0px 0px 10px;
@@ -269,6 +272,27 @@ input{
 	color: #000000;
 }
 input:focus {
+	outline: none !important;
+	border: solid 2px #55BBCA;
+	color: #000000;
+}
+
+select{
+	padding: 5px 10px 5px 10px;
+	width: 250px;
+	font-size: 15px;
+	border: solid 2px #BED2DC;
+	color: #000000;
+	outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+	background-color: #FFFFFF;
+	background: url(../images/arrowdown.gif) no-repeat right #ddd;
+	background-color: #FFFFFF;
+}
+select:focus{
 	outline: none !important;
 	border: solid 2px #55BBCA;
 	color: #000000;
