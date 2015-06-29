@@ -1,6 +1,7 @@
 var express = require('express');
 var quizController = require('../controllers/quiz_controller');
 var commentController = require('../controllers/comment_controller');
+var sessionController = require('../controllers/session_controller');
 
 var router = express.Router();
 
@@ -18,6 +19,9 @@ router.get('/author', function(req, res, next) {
 router.param('quizId', quizController.load);
 
 // GET quizes pages
+router.get('/login', sessionController.new);
+router.get('/logout', sessionController.destroy);
+
 router.get('/quizes', quizController.index);
 router.get('/quizes/new', quizController.new);
 router.get('/quizes/search', quizController.search);
@@ -34,6 +38,8 @@ router.put('/quizes/:quizId(\\d+)', quizController.update);
 router.delete('/quizes/:quizId(\\d+)', quizController.destroy);
 
 // POST quizes pages
+router.post('/login', sessionController.create);
+
 router.post('/quizes/create', quizController.create);
 
 router.post('/quizes/:quizId(\\d+)/comments', commentController.create);

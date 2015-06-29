@@ -14,6 +14,11 @@
 				<div id="logo">
 					<a href="/"><img src="/images/quiz-logo.png"></a>
 				</div>
+				<% if(!session.user) {%>
+					<div id="login_div"><p></p><a href="/login">Login</a></div>
+				<% } else {%>
+					<div id="login_div"><p><%= session.user.username %></p><a href="/logout">Logout</a></div>
+				<% } %>
 				<nav id="nav_header">
 					<ul>
 						<li><a href="/">Inicio</a></li>
@@ -21,6 +26,7 @@
 						<li><a href="/author">Autores</a></li>
 					</ul>
 				</nav>
+
 			</div>
 			<div class="content_box">
 				<article>

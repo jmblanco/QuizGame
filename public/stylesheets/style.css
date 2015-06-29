@@ -35,15 +35,15 @@ body {
 
 /* CSS Navegacion Header*/
 #logo {
-	padding: 10px 30px 10px 30px;
+	padding: 25px 0px 0px 10px;
 	float: left;
 }
 #logo img {
-	height:45px;
+	height:65px;
 	width:150px;
 }
 #nav_header {
-	padding: 10px 30px 10px 30px;
+	padding: 65px 30px 5px 0px;
 	float: right;
 }
 #nav_header ul {
@@ -65,6 +65,34 @@ body {
 }
 #nav_header li a .selected{
 	background-color: #61CED9;
+}
+
+#login_div {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	z-index: 1000;
+	padding: 5px 30px;
+}
+#login_div p {
+	display: inline-block;
+	font-size: 15px;
+	text-decoration: none;
+	color: #000000;
+	font-weight: bold;
+	padding: 5px;
+}
+#login_div a {
+	display: block;
+	background: rgba(190, 210, 220, 0.9);
+	font-size: 15px;
+	text-decoration: none;
+	color: #FFFFFF;
+	border: 1px solid #000000;
+	padding: 5px 10px;
+}
+#login_div a:hover{
+	background: rgba(190, 210, 220, 0.9);
 }
 
 /* CSS Navegacion Content*/
