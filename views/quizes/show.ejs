@@ -12,7 +12,14 @@
 	<p></p>
 	<h1>Comentarios:</h1>
 	<br>
-		<% for(index in quiz.Comments){ %>
-			<p class="quiz_comment"><%= quiz.Comments[index].texto %></p>
+	<% for(index in quiz.Comments){ %>
+		<% if(quiz.Comments[index].publicado || session.user){ %>
+			<p class="quiz_comment"><strong><%= quiz.Comments[index].autor %></strong><br><i><%= quiz.Comments[index].texto %></i></p>
+			<% if(session.user && !quiz.Comments[index].publicado){ %>
+				<div class="comment_actions">
+					<a href="/quizes/<%= quiz.id %>/comments/<%= quiz.Comments[index].id %>/publish"><button>Publicar</button></a>
+				</div>
+			<% } %>
 		<% } %>
+	<% } %>
 </section>

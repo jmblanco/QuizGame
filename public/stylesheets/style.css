@@ -247,6 +247,15 @@ section .quiz_comment {
     transition: all .3s ease-out;   
 }
 
+section .comment_actions button{
+    border: solid 2px #BED2DC;
+	color: #FFFFFF;
+	font-size: 12px;
+	background: #61CED9;
+	padding: 3px 10px 3px 10px; 
+	margin-left: 20px;
+}
+
 /* CSS Footer */
 footer {
 	background: rgba(50, 50, 50, 0.5);
