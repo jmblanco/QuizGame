@@ -206,6 +206,19 @@ section .link_question .question:before{
     transition: all .3s ease-out;
 }
 
+section .quiz_comment {
+	position: relative;
+    display: block;
+    padding: .4em .4em .4em 2em;
+    *padding: .4em;
+    margin: .5em 0;
+    background: #ddd;
+    color: #444;
+    border-radius: .3em;
+	border: 1px solid #FFFFFF;
+    transition: all .3s ease-out;   
+}
+
 /* CSS Footer */
 footer {
 	background: rgba(50, 50, 50, 0.5);

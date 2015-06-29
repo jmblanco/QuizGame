@@ -5,4 +5,14 @@
 		<input type="text" name="respuesta" placeholder="Responda aquí"/>
 		<button type="submit"/>Enviar</button>
 	</form>
+	<p></p>
+	<hr>
+	<p></p>
+	<a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo Comentario</button></a>
+	<p></p>
+	<h1>Comentarios:</h1>
+	<br>
+		<% for(index in quiz.Comments){ %>
+			<p class="quiz_comment"><%= quiz.Comments[index].texto %></p>
+		<% } %>
 </section>
