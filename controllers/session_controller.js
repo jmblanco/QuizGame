@@ -43,7 +43,7 @@ function minutesDiff(init, end) {
 exports.new = function(req, res){
 	console.log("Getting log form")
 	var errors = req.session.errors || {};
-	req.session.errors = {};
+	req.errors = {};
 	
 	res.render('sessions/new', {errors: errors});
 };
@@ -58,7 +58,7 @@ exports.create = function(req, res){
 	var userController = require('./user_controller');
 	userController.autenticar(login, password, function(error, user) {
 		if(error){
-			res.sessions.errors = [{ "message": 'Se ha producido un error: '+error}];
+			req.session.errors = [{ "message": ''+error}];
 			res.redirect("/login");
 			return;
 		}
@@ -71,7 +71,7 @@ exports.create = function(req, res){
 
 // DELETE /logout
 exports.destroy = function(req, res){
-	console.log("Destroying session for user ["+login+"]");
+	console.log("Destroying session for user ["+req.session.user+"]");
 	delete req.session.user;
 	delete req.session.lastDate;
 	res.redirect(req.session.redir.toString());
